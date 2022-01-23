@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>台灣股票現股當沖計算機</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+
+<body class="w3-sand">
+<div class="w3-auto w3-card w3-dark-grey">
+<h2>
+台灣股票現股交易之相關費用計算
+</h2>
+</div>
+
+<div class="w3-container">
+<P>
+請輸入買進或賣出之成交價。系統將自動計算出交易相關費用及交割金額。
+相關金額之計算不包含信用交易、ETF及券商折扣。
+</P>
+</div>
+
+<div class="w3-auto">
+<table class="w3-table w3-striped w3-border">
+  <thead class="w3-centered w3-row">
+    <tr>
+      <th class="w3-dark-gray">成交股數
+        <input class="w3-input w3-round" type="number" 
+            step=1 min=1 id="qty" size="6" value=1000 
+            oninput="calTradingFee(this)" tabindex="3">
+            <span tabindex="4"  
+                onFocus="document.querySelector('.begintab').focus()">
+            </span>
+      </th>
+      <th class="w3-pale-red">買進</th>
+      <th class="w3-pale-green">賣出</th>
+      <th class="w3-pale-blue" style="width:16%">當日沖銷</th>
+    </tr>      
+  </thead>
+  <tbody>
+    <tr>
+      <th>成交單價</th>
+      <td>
+        <input class="w3-input w3-round begintab" type="number" step=0.01 
+            min=0 id="buy_price" size="8" tabindex="1" autofocus
+            oninput="calPurchaseFee(this)">
+      </td>
+      <td>
+        <input class="w3-input w3-round" type="number" step=0.01 min=0 id="sell_price"
+            oninput="calSellStockFee(this)" size="8" tabindex="2">
+      </td>
+    </tr>
+    <tr>
+      <th>成交金額</th>
+      <td id="bGrossAmt" class="w3-right-align"></td>
+      <td id="sGrossAmt" class="w3-right-align"></td>
+      <td id="dtGrossAmt class="w3-right-align""></td>
+    </tr>
+    <tr>
+      <th>手續費</th>  
+      <td id="bSerFee" class="w3-right-align"></td> 
+      <td id="sSerFee" class="w3-right-align"></td>
+      <td id="dtSerFee" class="w3-right-align"></td>
+    </tr>
+    <tr>
+      <th>交易稅</th>
+      <td class="w3-right-align"> -- </td>
+      <td id="sTradFee" class="w3-right-align"></td>
+      <td id="dtTradFee" class="w3-right-align"></td>
+    </tr>
+    <tr>
+      <th>交割金額</th>
+      <td id="bNetAmt" class="w3-right-align"></td>
+      <td id="sNetAmt" class="w3-right-align"></td>
+      <td id="dtNetAmt" class="w3-right-align"></td>
+    </tr>
+    <tr>
+      <th>獲利 </th>
+      <td class="w3-right-align"> -- </td>
+      <td id="profit" class="w3-right-align" style="font-weight: bold;"></td>
+      <td id="dtProfit" class="w3-right-align" style="font-weight: bold;"></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="w3-panel w3-leftbar w3-rightbar w3-border-red">
+<P>
+買進及賣出手續費以0.1425%，賣出交易稅以0.3%計算，當日沖銷交易稅以0.15%計算。 
+</P>
+<p>
+ 此計算內容僅供參考，實際交割金額以往來證券商之資訊為準。
+</p>
+</div>
+  
+</body> 
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+</script>
+
+<script type="text/javascript">
+/***********************************************************/
+/** Global variable **/
+const rateServiceFee = 0.001425;
+const rateTradingFee = 0.003;
+const rateDayTrading = 0.0015;
+  
+/** Global object **/
+// formatting numbers: 1234567.12345 -> 1,234,567.12 
+const formatter = new Intl.NumberFormat( 
+                      "en", { minimumFractionDigits: 2, 
+                              maximumFractionDigits: 2 } );
+
+/************************************************************/
+/** 買進相關費用**/
+function calPurchaseFee( input_obj )
+{
+   // 買進單價
+   var bUprice = (parseFloat( $("#buy_price").val() )).toFixed(2);
+   $("#buy_price").css( "text-align", "right" );
+   //股數
+   var bQty = parseInt( $("#qty").val() );
+   $("#qty").css( "text-align", "right" );
+   // 價金
+   var bGAmt = bUprice * bQty;
+   $("#bGrossAmt").html( formatter.format(bGAmt) );
+   // 手續費
+   var bSFee = bGAmt * rateServiceFee;
+   $("#bSerFee").html( formatter.format(bSFee) );
+   // 交割金額
+   var bNAmt = bGAmt - bSFee;
+   $("#bNetAmt").html( formatter.format(bNAmt) );
+  
+   return bNAmt;
+}
+
+/********************************************************************************/
+/** 賣出相關費用**/ 
+function calSellStockFee( input_obj )
+{
+   // 賣出單價
+   var sUprice = parseFloat(  $("#sell_price").val() );
+   $("#sell_price").css( "text-align", "right" );
+   // 交易股數
+   var sQty = parseInt( $("#qty").val() );
+   $("#qty").css( "text-align", "right" );
+   // 價金
+   var sGAmt = sUprice * sQty;
+   $("#sGrossAmt").html( formatter.format(sGAmt) );
+   // 手續費
+   var sSFee = sGAmt * rateServiceFee;
+   $("#sSerFee").html( formatter.format(sSFee) );
+   // 交易稅
+   var sTax = sGAmt * rateTradingFee;
+   $("#sTradFee").html( formatter.format(sTax) );
+   // 交割金額
+   var sNAmt = sGAmt - sSFee - sTax;
+   $("#sNetAmt").html( formatter.format(sNAmt) );
+   // 損益
+   var bNAmt = calPurchaseFee(input_obj);
+   var sProfit = sNAmt - bNAmt;
+   if ( sProfit < 0 )
+       $("#profit").html( formatter.format(sProfit) ).css('color', 'red');       
+   else
+       $("#profit").html( formatter.format(sProfit) ).css('color', 'black');       ;
+
+   // 計算當日沖銷
+   calDayTradingFee( bNAmt, sGAmt, sQty );
+}
+
+/********************************************************************************/
+/** 當日沖銷相關費用計算
+  *  @param {number} buyNetAmount - Net payment amount for purchasing stocks.
+  *  @param {number} sellGrossAmount - Gross sell amount.
+  *  @param {number} qty - The stock trading volume.
+**/ 
+function calDayTradingFee( bNAmt, sGAmt, qty )
+{
+   // 手續費
+   var dtSFee = sGAmt * rateServiceFee;
+   $("#dtSerFee").html( formatter.format(dtSFee) );
+   // 交易稅
+   var dtTax = sGAmt * rateDayTrading;
+   $("#dtTradFee").html( formatter.format(dtTax) );
+   // 交割金額
+   var dtNAmt = sGAmt - dtSFee - dtTax;
+   $("#dtNetAmt").html( formatter.format(dtNAmt) );
+   // 損益
+   var dtProfit = dtNAmt - bNAmt;
+   if ( dtProfit < 0 )
+       $("#dtProfit").html( formatter.format(dtProfit) ).css('color', 'red');       
+   else
+       $("#dtProfit").html( formatter.format(dtProfit) ).css('color', 'black');  
+}
+
+/********************************************************************************/
+/** 交易股數變更時**/ 
+function calTradingFee( input_obj )
+{
+   // 重新計算買進資料
+   calPurchaseFee( input_obj );
+   // 重新計算賣出資料
+   calSellStockFee( input_obj );
+}
+  
+</script>
+
+</html>

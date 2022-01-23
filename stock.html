@@ -23,16 +23,22 @@
 
 <div class="w3-auto">
 <table class="w3-table w3-striped w3-border">
-  <thead class="w3-centered w3-row">
-    <tr>
-      <th class="w3-dark-gray" style="width:16%">成交股數
+  <thead class="w3-centered">
+      <tr>
+        <th class="w3-dark-gray">成交股數</th>
+        <th class="w3-dark-gray">
         <input class="w3-input w3-round" type="number" 
-            step=1 min=1 id="qty" size="6" value=1000 
+            step=1 min=1 id="qty" size="7" value=1000 
             oninput="calTradingFee(this)" tabindex="3">
             <span tabindex="4"  
                 onFocus="document.querySelector('.begintab').focus()">
             </span>
       </th>
+      <th>      </th>
+      <th>      </th>
+    </tr>      
+    <tr>
+      <th>      </th>
       <th class="w3-pale-red">買進</th>
       <th class="w3-pale-green">賣出</th>
       <th class="w3-pale-blue" style="width:16%">當日沖銷</th>
@@ -43,12 +49,12 @@
       <th>成交單價</th>
       <td>
         <input class="w3-input w3-round begintab" type="number" step=0.01 
-            min=0 id="buy_price" size="8" tabindex="1" autofocus
+            min=0 id="buy_price" size="7" tabindex="1" autofocus
             oninput="calPurchaseFee(this)">
       </td>
       <td>
         <input class="w3-input w3-round" type="number" step=0.01 min=0 id="sell_price"
-            oninput="calSellStockFee(this)" size="8" tabindex="2">
+            oninput="calSellStockFee(this)" size="7" tabindex="2">
       </td>
     </tr>
     <tr>

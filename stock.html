@@ -25,7 +25,8 @@
 <table class="w3-table w3-striped w3-border">
   <thead class="w3-centered">
       <tr>
-        <th class="w3-dark-gray">成交股數</th>
+        <th class="w3-dark-gray">
+            <span class="w3-hide-small">成交</span>股數</th>
         <th class="w3-dark-gray">
         <input class="w3-input w3-round" type="number" 
             step=1 min=1 id="qty" size="7" value=1000 
@@ -41,12 +42,13 @@
       <th>      </th>
       <th class="w3-pale-red">買進</th>
       <th class="w3-pale-green">賣出</th>
-      <th class="w3-pale-blue" style="width:16%">當日沖銷</th>
+      <th class="w3-pale-blue" style="width:16%">
+          <span class="w3-hide-small">當日</span>沖銷</th>
     </tr>      
   </thead>
   <tbody>
     <tr>
-      <th>成交單價</th>
+      <th> <span class="w3-hide-small">成交</span> 單價</th>
       <td>
         <input class="w3-input w3-round begintab" type="number" step=0.01 
             min=0 id="buy_price" size="7" tabindex="1" autofocus
@@ -58,7 +60,7 @@
       </td>
     </tr>
     <tr>
-      <th>成交金額</th>
+      <th> <span class="w3-hide-small">成交</span> 金額</th>
       <td id="bGrossAmt" class="w3-right-align"></td>
       <td id="sGrossAmt" class="w3-right-align"></td>
       <td id="dtGrossAmt class="w3-right-align""></td>
@@ -76,7 +78,7 @@
       <td id="dtTradFee" class="w3-right-align"></td>
     </tr>
     <tr>
-      <th>交割金額</th>
+        <th>交割金<span class="w3-hide-small">額</span></th>
       <td id="bNetAmt" class="w3-right-align"></td>
       <td id="sNetAmt" class="w3-right-align"></td>
       <td id="dtNetAmt" class="w3-right-align"></td>
@@ -213,3 +215,4 @@ function calTradingFee( input_obj )
 </script>
 
 </html>
+

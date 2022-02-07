@@ -148,8 +148,8 @@ function calPurchaseFee( input_obj )
    var bSFee = bGAmt * rateServiceFee;
    $("#bSerFee").html( formatter.format(bSFee) );
    // 交割金額
-   var bNAmt = bGAmt - bSFee;
-   $("#bNetAmt").html( formatter.format(bNAmt) );
+   var bNAmt = bGAmt + bSFee;
+   $("#bNetAmt").html( formatter.format(-1*bNAmt) );
   
    return bNAmt;
 }

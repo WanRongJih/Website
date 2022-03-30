@@ -93,7 +93,7 @@
     </tr>
     <tr class="w3-row">
       <th class="w3-col s2 w3-right-align">獲利 </th>
-      <td class="w3-col s3 w3-right-align"> -- </td>
+      <td id="test" class="w3-col s3 w3-right-align"> -- </td>
       <td id="profit" class="w3-col s3 w3-right-align" 
         style="font-weight: bold;"></td>
       <td id="dtProfit" class="w3-col s3 w3-right-align" 
@@ -136,6 +136,7 @@ const formatter = new Intl.NumberFormat(
 function calPurchaseFee( input_obj )
 {
    // 買進單價
+   //  $()is a shorthand for the getElementById function
    var bUprice = (parseFloat( $("#buy_price").val() )).toFixed(2);
    $("#buy_price").css( "text-align", "right" );
    //股數
@@ -151,7 +152,14 @@ function calPurchaseFee( input_obj )
    var bNAmt = bGAmt + bSFee;
    $("#bNetAmt").html( formatter.format(-1*bNAmt) );
   
-   return bNAmt;
+   if ( $("#sell_price").val() && $("#buy_price").val() )
+   {   // 計算當日沖銷
+       // 賣出單價
+       var sUprice = parseFloat(  $("#sell_price").val() );
+       calDayTradingFee( sUprice, bNAmt, sUprice * bQty, bQty );    
+   
+       return bNAmt;
+   }
 }
 
 /****************************************************************/
@@ -176,18 +184,23 @@ function calSellStockFee( input_obj )
    // 交割金額
    var sNAmt = sGAmt - sSFee - sTax;
    $("#sNetAmt").html( formatter.format(sNAmt) );
-   // 損益
-   var bNAmt = calPurchaseFee(input_obj);
-   var sProfit = sNAmt - bNAmt;
-   if ( sProfit < 0 )
-       $("#profit").html( formatter.format(sProfit) )
-         .css('color', 'red');
-   else
-       $("#profit").html( formatter.format(sProfit) )
-         .css('color', 'black');
 
-   // 計算當日沖銷
-   calDayTradingFee( sUprice, bNAmt, sGAmt, sQty );
+   if ( $("#sell_price").val() && $("#buy_price").val() )
+   {   // 損益
+       var bNAmt = calPurchaseFee(input_obj);
+   
+       var sProfit = sNAmt - bNAmt;
+       if ( sProfit < 0 )
+           $("#profit").html( formatter.format(sProfit) )
+             .css('color', 'red');
+       else
+           $("#profit").html( formatter.format(sProfit) )
+             .css('color', 'black');
+
+       // 計算當日沖銷
+       calDayTradingFee( sUprice, bNAmt, sGAmt, sQty );
+   }
+  
 }
 
 /****************************************************************/

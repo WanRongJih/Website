@@ -137,28 +137,27 @@ function calPurchaseFee( input_obj )
 {
    // 買進單價
    //  $()is a shorthand for the getElementById function
-   var bUprice = (parseFloat( $("#buy_price").val() )).toFixed(2);
+   bUprice = (parseFloat( $("#buy_price").val() )).toFixed(2);
    $("#buy_price").css( "text-align", "right" );
    //股數
-   var bQty = parseInt( $("#qty").val() );
+   bQty = parseInt( $("#qty").val() );
    $("#qty").css( "text-align", "right" );
    // 價金
-   var bGAmt = bUprice * bQty;
+   bGAmt = bUprice * bQty;
    $("#bGrossAmt").html( formatter.format(bGAmt) );
    // 手續費
-   var bSFee = bGAmt * rateServiceFee;
+   bSFee = bGAmt * rateServiceFee;
    $("#bSerFee").html( formatter.format(bSFee) );
    // 交割金額
-   var bNAmt = bGAmt + bSFee;
+   bNAmt = bGAmt + bSFee;
    $("#bNetAmt").html( formatter.format(-1*bNAmt) );
   
    if ( $("#sell_price").val() && $("#buy_price").val() )
-   {   // 計算當日沖銷
+   {   // 計算賣出及當日沖銷損益
        // 賣出單價
-       var sUprice = parseFloat(  $("#sell_price").val() );
-       calDayTradingFee( sUprice, bNAmt, sUprice * bQty, bQty );    
-   
-       return bNAmt;
+       sUprice = parseFloat(  $("#sell_price").val() );
+       //calDayTradingFee( sUprice, bNAmt, sUprice * bQty, bQty );    
+       calSellStockFee( input_obj )
    }
 }
 
@@ -167,29 +166,28 @@ function calPurchaseFee( input_obj )
 function calSellStockFee( input_obj )
 {
    // 賣出單價
-   var sUprice = parseFloat(  $("#sell_price").val() );
+   sUprice = parseFloat(  $("#sell_price").val() );
    $("#sell_price").css( "text-align", "right" );
    // 交易股數
-   var sQty = parseInt( $("#qty").val() );
+   sQty = parseInt( $("#qty").val() );
    $("#qty").css( "text-align", "right" );
    // 價金
-   var sGAmt = sUprice * sQty;
+   sGAmt = sUprice * sQty;
    $("#sGrossAmt").html( formatter.format(sGAmt) );
    // 手續費
-   var sSFee = sGAmt * rateServiceFee;
+   sSFee = sGAmt * rateServiceFee;
    $("#sSerFee").html( formatter.format(sSFee) );
    // 交易稅
-   var sTax = sGAmt * rateTradingFee;
+   sTax = sGAmt * rateTradingFee;
    $("#sTradFee").html( formatter.format(sTax) );
    // 交割金額
-   var sNAmt = sGAmt - sSFee - sTax;
+   sNAmt = sGAmt - sSFee - sTax;
    $("#sNetAmt").html( formatter.format(sNAmt) );
 
    if ( $("#sell_price").val() && $("#buy_price").val() )
    {   // 損益
-       var bNAmt = calPurchaseFee(input_obj);
    
-       var sProfit = sNAmt - bNAmt;
+       sProfit = sNAmt - bNAmt;
        if ( sProfit < 0 )
            $("#profit").html( formatter.format(sProfit) )
              .css('color', 'red');
@@ -217,16 +215,16 @@ function calDayTradingFee( sUprice, bNAmt, sGAmt, qty )
    // 價金
    $("#dtGrossAmt").html( formatter.format(sGAmt) );
    // 手續費
-   var dtSFee = sGAmt * rateServiceFee;
+   dtSFee = sGAmt * rateServiceFee;
    $("#dtSerFee").html( formatter.format(dtSFee) );
    // 交易稅
-   var dtTax = sGAmt * rateDayTrading;
+   dtTax = sGAmt * rateDayTrading;
    $("#dtTradFee").html( formatter.format(dtTax) );
    // 交割金額
-   var dtNAmt = sGAmt - dtSFee - dtTax;
+   dtNAmt = sGAmt - dtSFee - dtTax;
    $("#dtNetAmt").html( formatter.format(dtNAmt) );
    // 損益
-   var dtProfit = dtNAmt - bNAmt;
+   dtProfit = dtNAmt - bNAmt;
    if ( dtProfit < 0 )
        $("#dtProfit").html( formatter.format(dtProfit) )
          .css('color', 'red');       
@@ -236,7 +234,7 @@ function calDayTradingFee( sUprice, bNAmt, sGAmt, qty )
 }
 
 /****************************************************************/
-/** 交易股數變更時**/ 
+/** 交易股數及成交價變更時**/ 
 function calTradingFee( input_obj )
 {
    // 重新計算買進資料
